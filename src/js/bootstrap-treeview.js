@@ -153,8 +153,8 @@
 			search: $.proxy(this.search, this),
 			clearSearch: $.proxy(this.clearSearch, this),
 
-			reDraw: $.proxy(this.reDraw, this),
-			render: $.proxy(this.render, this),
+			redrawNode: $.proxy(this.redrawNode, this),
+			render: $.proxy(this.render, this)
 		};
 	};
 
@@ -553,7 +553,7 @@
 		var _this = this,
 			treeItem;
 		$.each(nodes, function (id, node) {
-			node.level = level;
+
 			treeItem = _this.generateNode(node);
 
 			// Add item to the tree
@@ -670,7 +670,7 @@
 		}
 
 		// Add def as badge tooltip
-		if (this.options.showTip && node.def) {
+		if (this.options.showTips && node.def) {
 			var template = this.template.tipTpl;
 			treeItem.append($(this.template.tip).attr('title', node.def).tooltip({
 				template: template
@@ -874,10 +874,10 @@
 	};
 
 	/**
-	 * reDrawNode node
+	 * redrawNode node
 	 * @param {Object} node
 	 */
-	Tree.prototype.reDrawNode = function (node) {
+	Tree.prototype.redrawNode = function (node) {
 
 		var newNodeDom = this.generateNode(node),
 			nodeDom = this.getDomNode(node.nodeId);
@@ -886,6 +886,10 @@
 			.clearAttributes()
 			.setAttributes(newNodeDom.getAttributes())
 			.html(newNodeDom.html());
+
+		if (this.options.showTips) {
+			$('[data-toggle="tooltip"]', this.$element).tooltip();
+		}
 	};
 
 
