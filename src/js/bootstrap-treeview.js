@@ -61,6 +61,7 @@
 		showIcon: true,
 		showCheckbox: false,
 		showTags: false,
+		showTips: false,
 		multiSelect: false,
 
 		// Event handlers
@@ -350,8 +351,9 @@
 
 			this.toggleCheckedState(node, _default.options);
 			this.render();
-		}
-		else {
+		} else if ((classList.indexOf('node-tip') !== -1)) {
+
+		} else {
 
 			if (node.selectable) {
 				this.toggleSelectedState(node, _default.options);
@@ -666,6 +668,15 @@
 				);
 			});
 		}
+
+		// Add def as badge tooltip
+		if (this.options.showTip && node.def) {
+			var template = this.template.tipTpl;
+			treeItem.append($(this.template.tip).attr('title', node.def).tooltip({
+				template: template
+			}));
+		}
+
 		return treeItem;
 	};
 
@@ -748,7 +759,9 @@
 		indent: '<span class="indent"></span>',
 		icon: '<span class="icon"></span>',
 		link: '<a href="#" style="color:inherit;"></a>',
-		badge: '<span class="badge"></span>'
+		badge: '<span class="badge"></span>',
+		tip: '<span class="badge node-tip" data-toggle="tooltip" data-placement="auto right" data-container="body">?</span>',
+		tipTpl: '<div class="tooltip node-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
 	};
 
 	Tree.prototype.css = '.treeview li{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
