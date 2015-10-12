@@ -22,12 +22,8 @@ module.exports = function(grunt) {
       }
     },
 
-    qunit: {
-        all: ['tests/*.html']
-    },
-
     watch: {
-      files: ['tests/*.js', 'tests/*.html', 'src/**'],
+      files: ['src/**'],
       tasks: ['default']
     },
 
@@ -36,11 +32,11 @@ module.exports = function(grunt) {
         files: [
           // copy dist to tests
           // { expand: true, cwd: 'dist', src: '*', dest: 'tests/lib/' },
-          { expand: true, cwd: 'src/css', src: '*', dest: 'tests/lib/' },
-          { expand: true, cwd: 'src/js', src: '*', dest: 'tests/lib/' },
+          //{ expand: true, cwd: 'src/css', src: '*', dest: 'tests/lib/' },
+          //{ expand: true, cwd: 'src/js', src: '*', dest: 'tests/lib/' },
           // copy latest libs to tests
-          { expand: true, cwd: 'public/bower_components/jquery', src: 'jquery.js', dest: 'tests/lib/' },
-          { expand: true, cwd: 'public/bower_components/bootstrap-datepicker/js', src: 'bootstrap-datepicker.js', dest: 'tests/lib/' },
+          //{ expand: true, cwd: 'public/bower_components/jquery', src: 'jquery.js', dest: 'tests/lib/' },
+          //{ expand: true, cwd: 'public/bower_components/bootstrap-datepicker/js', src: 'bootstrap-datepicker.js', dest: 'tests/lib/' },
           // copy src to example
           { expand: true, cwd: 'src/css', src: '*', dest: 'public/css/' },
           { expand: true, cwd: 'src/js', src: '*', dest: 'public/js/' }
@@ -52,11 +48,11 @@ module.exports = function(grunt) {
   // load up your plugins
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.loadNpmTasks('grunt-contrib-qunit');
+  //grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-copy');
 
   // register one or more task lists (you should ALWAYS have a "default" task list)
-  grunt.registerTask('default', ['uglify','cssmin', 'copy', 'qunit', 'watch']);
-  grunt.registerTask('test', 'qunit');
+  grunt.registerTask('default', ['uglify','cssmin', 'copy']);
+  //grunt.registerTask('test', 'qunit');
 };
