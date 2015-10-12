@@ -5,11 +5,17 @@ All notable changes to this project will be documented in this file.
 
 ### New Features
 
-- New methode `reDraw`
+- New methods `reDrawNode` and `getDomNode`
+
+- Change public method `render` 
 
 - New properties `nodeLiClass` and `itemTemplate`
 	
 - New Events `onNodeHover` and `onNodeLeave`
+
+- Fix `buildStyleOverride`
+
+- more fixies
 
 
 

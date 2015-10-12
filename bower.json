@@ -8,7 +8,6 @@
     "dist/bootstrap-treeview.min.css"
   ],
   "keywords": [
-    "twitter",
     "bootstrap",
     "tree",
     "treeview",
@@ -21,12 +20,11 @@
   "ignore": [
     "**/.*",
     "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "bower_components"
   ],
   "dependencies": {
     "jquery": ">= 1.9.0",
+    "jQuery-Ext": ">= 0.0.1",
     "bootstrap": ">= 3.0.0"
   },
   "devDependencies": {}
