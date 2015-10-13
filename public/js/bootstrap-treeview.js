@@ -35,6 +35,7 @@
 		levels: 2,
 
 		nodeLiClass: 'list-group-item',
+		textNodeClass: 'text',
 		itemTemplate: '<li class="{{nodeLiClass}}"></li>',
 
 		expandIcon: 'glyphicon glyphicon-plus',
@@ -61,6 +62,7 @@
 		showIcon: true,
 		showCheckbox: false,
 		showTags: false,
+		showTips: false,
 		multiSelect: false,
 
 		// Event handlers
@@ -119,6 +121,7 @@
 			getUnchecked: $.proxy(this.getUnchecked, this),
 			getDisabled: $.proxy(this.getDisabled, this),
 			getEnabled: $.proxy(this.getEnabled, this),
+			getDomNode: $.proxy(this.getDomNode, this),
 
 			// Select methods
 			selectNode: $.proxy(this.selectNode, this),
@@ -151,7 +154,8 @@
 			search: $.proxy(this.search, this),
 			clearSearch: $.proxy(this.clearSearch, this),
 
-			reDraw: $.proxy(this.reDraw, this)
+			redrawNode: $.proxy(this.redrawNode, this),
+			render: $.proxy(this.render, this)
 		};
 	};
 
@@ -285,6 +289,8 @@
 			// parentId : transversing up the tree
 			node.parentId = parent.nodeId;
 
+			node.level = level;
+
 			// if not provided set selectable default value
 			if (!node.hasOwnProperty('selectable')) {
 				node.selectable = true;
@@ -305,14 +311,12 @@
 
 			// set expanded state; if not provided based on levels
 			if (!node.state.hasOwnProperty('expanded')) {
-				if (!node.state.disabled &&
-					(level < _this.options.levels) &&
-					(node.nodes && node.nodes.length > 0)) {
-					node.state.expanded = true;
-				}
-				else {
-					node.state.expanded = false;
-				}
+				node.state.expanded =
+					!node.state.disabled &&
+					level < _this.options.levels &&
+					node.nodes && node.nodes.length > 0
+						? true
+						: false;
 			}
 
 			// set selected state; unless set always false
@@ -348,8 +352,9 @@
 
 			this.toggleCheckedState(node, _default.options);
 			this.render();
-		}
-		else {
+		} else if ((classList.indexOf('node-tip') !== -1)) {
+
+		} else {
 
 			if (node.selectable) {
 				this.toggleSelectedState(node, _default.options);
@@ -387,7 +392,7 @@
 	// data attribute nodeid, which is used to lookup the node in the flattened structure.
 	Tree.prototype.findNode = function (target) {
 
-		var nodeId = target.closest('li.' + this.options.nodeLiClass).attr('data-nodeid');
+		var nodeId = target.closest('li.' + this.options.nodeLiClass).attr('data-node-id');
 		var node = this.nodes[nodeId];
 
 		if (!node) {
@@ -536,123 +541,145 @@
 		this.$element.empty().append(this.$wrapper.empty());
 
 		// Build tree
-		this.buildTree(this.tree, 0);
+		this.buildTree(this.tree);
 	};
 
 	// Starting from the root node, and recursing down the
 	// structure we build the tree one node at a time
-	Tree.prototype.buildTree = function (nodes, level) {
+	Tree.prototype.buildTree = function (nodes) {
 
-		if (!nodes) return;
-		level += 1;
+		if (!nodes)
+			return;
 
 		var _this = this,
-			itemTpl = _this.options.itemTemplate.replace('{{nodeLiClass}}', _this.options.nodeLiClass);
-		$.each(nodes, function addNodes(id, node) {
+			treeItem;
+		$.each(nodes, function (id, node) {
 
-			var treeItem = $(itemTpl)
-				.addClass('node-' + _this.elementId)
-				.addClass(node.state.checked ? 'node-checked' : '')
-				.addClass(node.state.disabled ? 'node-disabled' : '')
-				.addClass(node.state.selected ? 'node-selected' : '')
-				.addClass(node.searchResult ? 'search-result' : '')
-				.attr('data-nodeid', node.nodeId)
-				.attr('style', _this.buildStyleOverride(node));
-
-			// Add indent/spacer to mimic tree structure
-			for (var i = 0; i < (level - 1); i++) {
-				treeItem.append(_this.template.indent);
-			}
-
-			// Add expand, collapse or empty spacer icons
-			var classList = [];
-			if (node.nodes) {
-				classList.push('expand-icon');
-				if (node.state.expanded) {
-					classList.push(_this.options.collapseIcon);
-				}
-				else {
-					classList.push(_this.options.expandIcon);
-				}
-			}
-			else {
-				classList.push(_this.options.emptyIcon);
-			}
-
-			treeItem
-				.append($(_this.template.icon)
-					.addClass(classList.join(' '))
-			);
-
-
-			// Add node icon
-			if (_this.options.showIcon) {
-
-				var classList = ['node-icon'];
-
-				classList.push(node.icon || _this.options.nodeIcon);
-				if (node.state.selected) {
-					classList.pop();
-					classList.push(node.selectedIcon || _this.options.selectedIcon ||
-						node.icon || _this.options.nodeIcon);
-				}
-
-				treeItem
-					.append($(_this.template.icon)
-						.addClass(classList.join(' '))
-				);
-			}
-
-			// Add check / unchecked icon
-			if (_this.options.showCheckbox) {
-
-				var classList = ['check-icon'];
-				if (node.state.checked) {
-					classList.push(_this.options.checkedIcon);
-				}
-				else {
-					classList.push(_this.options.uncheckedIcon);
-				}
-
-				treeItem
-					.append($(_this.template.icon)
-						.addClass(classList.join(' '))
-				);
-			}
-
-			// Add text
-			if (_this.options.enableLinks) {
-				// Add hyperlink
-				treeItem
-					.append($(_this.template.link)
-						.attr('href', node.href)
-						.append(node.text)
-				);
-			}
-			else {
-				// otherwise just text
-				treeItem
-					.append(node.text);
-			}
-
-			// Add tags as badges
-			if (_this.options.showTags && node.tags) {
-				$.each(node.tags, function addTag(id, tag) {
-					treeItem
-						.append($(_this.template.badge)
-							.append(tag)
-					);
-				});
-			}
+			treeItem = _this.generateNode(node);
 
 			// Add item to the tree
 			_this.$wrapper.append(treeItem);
 
 			// Recursively add child ndoes
 			if (node.nodes && node.state.expanded && !node.state.disabled) {
-				return _this.buildTree(node.nodes, level);
+				return _this.buildTree(node.nodes);
 			}
 		});
+	};
+
+	Tree.prototype.generateNode = function (node) {
+
+		var itemTpl = node.itemTpl !== undefined ? node.itemTpl : this.options.itemTemplate;
+
+		itemTpl = itemTpl.replace('{{nodeLiClass}}', this.options.nodeLiClass);
+
+		var treeItem = $(itemTpl)
+			.addClass('node-' + this.elementId)
+			.addClass(node.state.checked ? 'node-checked' : '')
+			.addClass(node.state.disabled ? 'node-disabled' : '')
+			.addClass(node.state.selected ? 'node-selected' : '')
+			.addClass(node.searchResult ? 'search-result' : '')
+			.attr('data-node-id', node.nodeId)
+			.attr('style', this.buildStyleOverride(node));
+
+		// Add indent/spacer to mimic tree structure
+		for (var i = 0; i < (node.level - 1); i++) {
+			treeItem.append(this.template.indent);
+		}
+
+		// Add expand, collapse or empty spacer icons
+		var classList = [];
+
+		if (node.nodes) {
+			classList.push('expand-icon');
+			if (node.state.expanded) {
+				classList.push(this.options.collapseIcon);
+			}
+			else {
+				classList.push(this.options.expandIcon);
+			}
+		}
+		else {
+			classList.push(this.options.emptyIcon);
+		}
+
+		treeItem
+			.append($(this.template.icon)
+				.addClass(classList.join(' '))
+		);
+
+
+		// Add node icon
+		if (this.options.showIcon) {
+
+			classList = ['node-icon'];
+
+			classList.push(node.icon || this.options.nodeIcon);
+			if (node.state.selected) {
+				classList.pop();
+				classList.push(node.selectedIcon || this.options.selectedIcon ||
+					node.icon || this.options.nodeIcon);
+			}
+
+			treeItem
+				.append($(this.template.icon)
+					.addClass(classList.join(' '))
+			);
+		}
+
+		// Add check / unchecked icon
+		if (this.options.showCheckbox) {
+
+			classList = ['check-icon'];
+			if (node.state.checked) {
+				classList.push(this.options.checkedIcon);
+			}
+			else {
+				classList.push(this.options.uncheckedIcon);
+			}
+
+			treeItem
+				.append($(this.template.icon)
+					.addClass(classList.join(' '))
+			);
+		}
+
+		// Add text
+		if (this.options.enableLinks) {
+			// Add hyperlink
+			treeItem
+				.append($(this.template.link)
+					.addClass(this.options.textNodeClass)
+					.attr('href', node.href)
+					.append(node.text)
+			);
+		}
+		else {
+			// otherwise just text
+			treeItem
+				.append('<span class="'+this.options.textNodeClass+'">'+node.text+'</span>');
+		}
+
+		// Add tags as badges
+		if (this.options.showTags && node.tags) {
+			var _this = this;
+			$.each(node.tags, function addTag(id, tag) {
+				treeItem
+					.append($(_this.template.badge)
+						.append(tag)
+				);
+			});
+		}
+
+		// Add def as badge tooltip
+		if (this.options.showTips && node.def) {
+			var template = this.template.tipTpl;
+			treeItem.append($(this.template.tip).attr('title', node.def).tooltip({
+				template: template
+			}));
+		}
+
+		return treeItem;
 	};
 
 	// Define any node level style override for
@@ -683,8 +710,12 @@
 			}
 		}
 
-		return 'color:' + color +
-			';background-color:' + backColor + ';';
+		var style = [];
+		if (color !== undefined)
+			style.push('color:' + color + ';');
+		if (backColor !== undefined)
+			style.push('background-color:' + backColor + ';');
+		return style.join('');
 	};
 
 	// Add inline style into head
@@ -730,7 +761,9 @@
 		indent: '<span class="indent"></span>',
 		icon: '<span class="icon"></span>',
 		link: '<a href="#" style="color:inherit;"></a>',
-		badge: '<span class="badge"></span>'
+		badge: '<span class="badge"></span>',
+		tip: '<span class="badge node-tip" data-toggle="tooltip" data-placement="auto right" data-container="body">?</span>',
+		tipTpl: '<div class="tooltip node-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
 	};
 
 	Tree.prototype.css = '.treeview li{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
@@ -834,11 +867,59 @@
 	};
 
 	/**
-	 * Redraw TREE
+	 * Return DOM-node by nodeId
+	 * @param nodeId
+	 * @returns {*}
 	 */
-	Tree.prototype.reDraw = function () {
-		this.render();
+	Tree.prototype.getDomNode = function (nodeId) {
+		return this.$element.find('li.' + this.options.nodeLiClass + '[data-node-id=' + nodeId + ']');
 	};
+
+	/**
+	 * redrawNode node
+	 * @param {Object} node
+	 */
+	Tree.prototype.redrawNode = function (node) {
+
+		var newNodeDom = this.generateNode(node),
+			nodeDom = this.getDomNode(node.nodeId);
+
+		nodeDom
+			.clearAttributes()
+			.setAttributes(newNodeDom.getAttributes());
+
+		if (node.nodes) {
+			var classes,
+				indents = '';
+
+			for (var i = 0; i < (node.level - 1); i++) {
+				indents += this.template.indent;
+			}
+
+			nodeDom.children().each(function (i, item) {
+				if (item.classList.contains('expand-icon'))
+					return;
+				classes = '.' + item.classList.toString().replace(/\s/gm, '.');
+				nodeDom.find(classes).remove();
+			});
+
+			nodeDom.prepend(indents);
+
+			newNodeDom.children().each(function (i, item) {
+				if (item.classList.contains('expand-icon') || item.classList.contains('indent'))
+					return;
+				classes = '.' + item.classList.toString().replace(/\s/gm, '.');
+				nodeDom.append(newNodeDom.find(classes));
+			});
+		} else {
+			nodeDom.html(newNodeDom.html());
+		}
+
+		if (this.options.showTips) {
+			$('[data-toggle="tooltip"]', this.$element).tooltip();
+		}
+	};
+
 
 	/**
 	 Set a node state to selected
