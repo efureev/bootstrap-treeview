@@ -2,13 +2,13 @@
 
 ---
 
-![Bower version](https://img.shields.io/bower/v/bootstrap-treeview.svg?style=flat)
-[![npm version](https://img.shields.io/npm/v/bootstrap-treeview.svg?style=flat)](https://www.npmjs.com/package/bootstrap-treeview)
-[![Build Status](https://img.shields.io/travis/jonmiles/bootstrap-treeview/master.svg?style=flat)](https://travis-ci.org/jonmiles/bootstrap-treeview)
+[![GH version](https://badge-me.herokuapp.com/api/gh/efureev/bootstrap-treeview.png)](http://badges.enytc.com/for/gh/efureev/bootstrap-treeview)
+[![BOWER version](https://badge-me.herokuapp.com/api/bower/efureev/bootstrap-treeview.png)](http://badges.enytc.com/for/bower/efureev/bootstrap-treeview)
 
 A simple and elegant solution to displaying hierarchical tree structures (i.e. a Tree View) while leveraging the best that Twitter Bootstrap has to offer.
 
 ![Bootstrap Tree View Default](https://raw.github.com/jonmiles/bootstrap-treeview/master/screenshot/default.PNG)
+![Bootstrap Tree View](https://cloud.githubusercontent.com/assets/5524684/10458825/33c91838-71e6-11e5-9809-e54bcef67288.jpg)
 
 ## Dependencies
 
@@ -42,7 +42,7 @@ Add the following resources for the bootstrap-treeview to function correctly.
 
 <!-- Required Javascript -->
 <script src="jquery.js"></script>
-<script src="bootstrap-treeview.js"></script>
+<script src="bootstrap-treeview.full.min.js"></script>
 ```
 
 The component will bind to any existing DOM element.
@@ -73,9 +73,11 @@ Example
 var tree = [
   {
     text: "Parent 1",
+    tags:[12],
     nodes: [
       {
         text: "Child 1",
+        def: "Hi",
         nodes: [
           {
             text: "Grandchild 1"
@@ -360,6 +362,20 @@ Whether or not to display tags to the right of each node.  The values of which m
 String, class names(s).  Default: "glyphicon glyphicon-unchecked" as defined by [Bootstrap Glyphicons](http://getbootstrap.com/components/#glyphicons)
 
 Sets the icon to be as an unchecked checkbox, used in conjunction with showCheckbox.
+
+
+### nodeLiClass
+String. Default: `list-group-item`
+
+Base class for LI items
+
+### itemTemplate
+String. Default: `<li class="{{nodeLiClass}}"></li>`
+
+Template of LI item
+
+### showTip
+Boolean.  Default: false
 
 
 ## Methods
@@ -693,6 +709,13 @@ $('#tree').treeview('unselectNode', [ nodeId, { silent: true } ]);
 
 Triggers `nodeUnselected` event; pass silent to suppress events.
 
+
+### render ()
+
+Render Tree
+
+
+
 ## Events
 
 Events are provided so that your application can respond to changes in the treeview's state.  For example, if you want to update a display when a node is selected use the `nodeSelected` event.
@@ -719,6 +742,15 @@ $('#tree').on('nodeSelected', function(event, data) {
 });
 ```
 
+On `onNodeHover` and `onNodeLeave`: 
+
+```javascript
+function (undefined, item, tv) {
+	item.def = 'Hi!';
+	tv.treeview('redrawNode', item);
+}
+```
+
 ### List of Events
 
 `nodeChecked (event, node)`  - A node is checked.
@@ -740,6 +772,10 @@ $('#tree').on('nodeSelected', function(event, data) {
 `searchComplete (event, results)`  - After a search completes
 
 `searchCleared (event, results)`  - After search results are cleared
+
+`nodeHover (event, node, treeview)`  - Hover on Node
+
+`nodeLeave (event, node, treeview)`  - Leave from Node
 
 
 
