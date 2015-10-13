@@ -35,7 +35,7 @@
 		levels: 2,
 
 		nodeLiClass: 'list-group-item',
-		textNodeClass: 'text',
+		//textNodeClass: 'text',
 		itemTemplate: '<li class="{{nodeLiClass}}"></li>',
 
 		expandIcon: 'glyphicon glyphicon-plus',
@@ -371,7 +371,6 @@
 	};
 
 	Tree.prototype.onNodeHoverHandler = function (event) {
-
 		if (this.options.onNodeHover === undefined)
 			return;
 
@@ -382,7 +381,6 @@
 	};
 
 	Tree.prototype.onNodeLeaveHandler = function (event) {
-
 		if (this.options.onNodeLeave === undefined)
 			return;
 
@@ -662,7 +660,7 @@
 			// Add hyperlink
 			treeItem
 				.append($(this.template.link)
-					.addClass(this.options.textNodeClass)
+					//.addClass(this.options.textNodeClass)
 					.attr('href', node.href)
 					.append(node.text)
 			);
@@ -670,7 +668,8 @@
 		else {
 			// otherwise just text
 			treeItem
-				.append('<span class="'+this.options.textNodeClass+'">'+node.text+'</span>');
+				//.append('<span class="'+this.options.textNodeClass+'">'+node.text+'</span>');
+				.append(node.text);
 		}
 
 		// Add tags as badges
@@ -903,7 +902,8 @@
 
 		if (node.nodes) {
 			var classes,
-				indents = '';
+				indents = '',
+				textNode = node.text;
 
 			for (var i = 0; i < (node.level - 1); i++) {
 				indents += this.template.indent;
@@ -916,13 +916,22 @@
 				nodeDom.find(classes).remove();
 			});
 
-			nodeDom.prepend(indents);
+			var f = nodeDom.children().first();
+
+			nodeDom.text('')
+				.append(f)
+				.prepend(indents);
 
 			newNodeDom.children().each(function (i, item) {
 				if (item.classList.contains('expand-icon') || item.classList.contains('indent'))
 					return;
+
 				classes = '.' + item.classList.toString().replace(/\s/gm, '.');
 				nodeDom.append(newNodeDom.find(classes));
+
+				if (item.classList.contains('node-icon')) {
+					nodeDom.append(textNode);
+				}
 			});
 		} else {
 			nodeDom.html(newNodeDom.html());
