@@ -9,7 +9,7 @@ A simple and elegant solution to displaying hierarchical tree structures (i.e. a
 
 ![Bootstrap Tree View Default](https://raw.github.com/jonmiles/bootstrap-treeview/master/screenshot/default.PNG)
 ![Bootstrap Tree View](https://cloud.githubusercontent.com/assets/5524684/10458825/33c91838-71e6-11e5-9809-e54bcef67288.jpg)
-
+![f970bb36c4](https://cloud.githubusercontent.com/assets/5524684/10469016/d7b9fa04-721b-11e5-8499-4b097607bf39.jpg)
 ## Dependencies
 
 Where provided these are the actual versions bootstrap-treeview has been tested against.  

@@ -8,7 +8,9 @@ All notable changes to this project will be documented in this file.
  - Add node menu:
  	- option `menuTpl` - inner template for menu 
  	- option `showMenu` - enable node menu 
- 	- event `onNodeMenuClick` - event on click on menu button 
+ 	- event `onNodeMenuClick` - event on click on menu button
+ 	 
+ 	![f970bb36c4](https://cloud.githubusercontent.com/assets/5524684/10469016/d7b9fa04-721b-11e5-8499-4b097607bf39.jpg)
  
  
 ## v1.3.2 - 13th Oct, 2015
