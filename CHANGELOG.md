@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v1.3.2 - 13th Oct, 2015
+
+### New Features
+
+ - Add option `textNodeClass`
+ - fix `redraw`
+ 
+ 
 ## v1.3.1 - 13th Oct, 2015
 
 ### New Features

@@ -35,6 +35,7 @@
 		levels: 2,
 
 		nodeLiClass: 'list-group-item',
+		textNodeClass: 'text',
 		itemTemplate: '<li class="{{nodeLiClass}}"></li>',
 
 		expandIcon: 'glyphicon glyphicon-plus',
@@ -648,6 +649,7 @@
 			// Add hyperlink
 			treeItem
 				.append($(this.template.link)
+					.addClass(this.options.textNodeClass)
 					.attr('href', node.href)
 					.append(node.text)
 			);
@@ -655,7 +657,7 @@
 		else {
 			// otherwise just text
 			treeItem
-				.append(node.text);
+				.append('<span class="'+this.options.textNodeClass+'">'+node.text+'</span>');
 		}
 
 		// Add tags as badges
@@ -884,8 +886,34 @@
 
 		nodeDom
 			.clearAttributes()
-			.setAttributes(newNodeDom.getAttributes())
-			.html(newNodeDom.html());
+			.setAttributes(newNodeDom.getAttributes());
+
+		if (node.nodes) {
+			var classes,
+				indents = '';
+
+			for (var i = 0; i < (node.level - 1); i++) {
+				indents += this.template.indent;
+			}
+
+			nodeDom.children().each(function (i, item) {
+				if (item.classList.contains('expand-icon'))
+					return;
+				classes = '.' + item.classList.toString().replace(/\s/gm, '.');
+				nodeDom.find(classes).remove();
+			});
+
+			nodeDom.prepend(indents);
+
+			newNodeDom.children().each(function (i, item) {
+				if (item.classList.contains('expand-icon') || item.classList.contains('indent'))
+					return;
+				classes = '.' + item.classList.toString().replace(/\s/gm, '.');
+				nodeDom.append(newNodeDom.find(classes));
+			});
+		} else {
+			nodeDom.html(newNodeDom.html());
+		}
 
 		if (this.options.showTips) {
 			$('[data-toggle="tooltip"]', this.$element).tooltip();
