@@ -205,6 +205,8 @@
 
 		this.$element.off('mouseenter', 'li.' + this.options.nodeLiClass);
 		this.$element.off('mouseleave', 'li.' + this.options.nodeLiClass);
+		this.$element.off('mouseenter');
+		this.$element.off('mouseleave');
 
 		this.$element.off('nodeChecked');
 		this.$element.off('nodeCollapsed');
@@ -226,6 +228,8 @@
 
 		this.$element.on('mouseenter', 'li.' + this.options.nodeLiClass, $.proxy(this.onNodeHoverHandler, this));
 		this.$element.on('mouseleave', 'li.' + this.options.nodeLiClass, $.proxy(this.onNodeLeaveHandler, this));
+		this.$element.on('mouseenter', $.proxy(this.onTreeHoverHandler, this));
+		this.$element.on('mouseleave', $.proxy(this.onTreeLeaveHandler, this));
 
 		if (typeof (this.options.onNodeChecked) === 'function') {
 			this.$element.on('nodeChecked', this.options.onNodeChecked);
@@ -385,7 +389,16 @@
 		var target = $(event.target),
 			node = this.findNode(target);
 
+		$('body div[role=tooltip]').remove();
 		this.options.onNodeLeave(event, node, this.$element);
+	};
+
+	Tree.prototype.onTreeHoverHandler = function (event) {
+
+	};
+
+	Tree.prototype.onTreeLeaveHandler = function (event) {
+		$('body div[role=tooltip]').remove();
 	};
 
 	// Looks up the DOM for the closest parent list item to retrieve the
