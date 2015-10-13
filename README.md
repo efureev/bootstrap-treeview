@@ -353,10 +353,30 @@ Boolean.  Default: true
 
 Whether or not to display a nodes icon.
 
+#### showMenu
+Boolean.  Default: false
+
+Whether or not to display node Menu 
+
+
+#### menuTpl
+String.  Default: undefined
+
+Inner html for node menu, Exp:
+```html
+<div class="btn-group btn-group-xs" role="group">
+	<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+	<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+	<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+</div>
+```
+
+
 #### showTags
 Boolean.  Default: false
 
 Whether or not to display tags to the right of each node.  The values of which must be provided in the data structure on a per node basis.
+
 
 #### uncheckedIcon
 String, class names(s).  Default: "glyphicon glyphicon-unchecked" as defined by [Bootstrap Glyphicons](http://getbootstrap.com/components/#glyphicons)

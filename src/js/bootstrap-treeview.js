@@ -1,22 +1,3 @@
-/* =========================================================
- * bootstrap-treeview.js v1.3.0
- * =========================================================
- * Copyright 2013 Jonathan Miles
- * Project URL : http://www.jondmiles.com/bootstrap-treeview
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ========================================================= */
-
 ;
 (function ($, window, document, undefined) {
 
@@ -37,6 +18,7 @@
 		nodeLiClass: 'list-group-item',
 		//textNodeClass: 'text',
 		itemTemplate: '<li class="{{nodeLiClass}}"></li>',
+		menuTpl: undefined,
 
 		expandIcon: 'glyphicon glyphicon-plus',
 		collapseIcon: 'glyphicon glyphicon-minus',
@@ -63,6 +45,7 @@
 		showCheckbox: false,
 		showTags: false,
 		showTips: false,
+		showMenu: false,
 		multiSelect: false,
 
 		// Event handlers
@@ -76,6 +59,7 @@
 		onNodeUnselected: undefined,
 		onSearchComplete: undefined,
 		onSearchCleared: undefined,
+		onNodeMenuClick: undefined,
 
 		onNodeHover: undefined,
 		onNodeLeave: undefined
@@ -235,6 +219,10 @@
 			this.$element.on('nodeChecked', this.options.onNodeChecked);
 		}
 
+		if (typeof (this.options.onNodeMenuClick) === 'function') {
+			this.$element.on('nodeMenuClick', this.options.onNodeMenuClick);
+		}
+
 		if (typeof (this.options.onNodeCollapsed) === 'function') {
 			this.$element.on('nodeCollapsed', this.options.onNodeCollapsed);
 		}
@@ -340,13 +328,22 @@
 
 	Tree.prototype.clickHandler = function (event) {
 
-		if (!this.options.enableLinks) event.preventDefault();
+		if (!this.options.enableLinks)
+			event.preventDefault();
 
-		var target = $(event.target);
-		var node = this.findNode(target);
-		if (!node || node.state.disabled) return;
+		var target = $(event.target),
+			node = this.findNode(target);
+
+		if (!node || node.state.disabled)
+			return;
+
+		if (target.closest('.node-toolbar').length) {
+			var btn = target.closest('button');
+			return this.$element.trigger('nodeMenuClick',[btn, node]);
+		}
 
 		var classList = target.attr('class') ? target.attr('class').split(' ') : [];
+
 		if ((classList.indexOf('expand-icon') !== -1)) {
 
 			this.toggleExpandedState(node, _default.options);
@@ -691,6 +688,12 @@
 			}));
 		}
 
+		// Add menu
+		if (this.options.showMenu && this.options.menuTpl !== undefined) {
+			var tpl = this.template.menuTpl;
+			treeItem.append($(tpl).append(this.options.menuTpl));
+		}
+
 		return treeItem;
 	};
 
@@ -775,7 +778,8 @@
 		link: '<a href="#" style="color:inherit;"></a>',
 		badge: '<span class="badge"></span>',
 		tip: '<span class="badge node-tip" data-toggle="tooltip" data-placement="auto right" data-container="body">?</span>',
-		tipTpl: '<div class="tooltip node-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+		tipTpl: '<div class="tooltip node-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+		menuTpl: '<div class="btn-toolbar node-toolbar" role="toolbar" aria-label="Toolbar"></div>'
 	};
 
 	Tree.prototype.css = '.treeview li{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'

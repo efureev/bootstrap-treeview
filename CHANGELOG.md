@@ -1,11 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## v1.3.2 - 13th Oct, 2015
+## v1.4.0 - 14th Oct, 2015
 
 ### New Features
 
- - Add option `textNodeClass`
+ - Add node menu:
+ 	- option `menuTpl` - inner template for menu 
+ 	- option `showMenu` - enable node menu 
+ 	- event `onNodeMenuClick` - event on click on menu button 
+ 
+ 
+## v1.3.2 - 13th Oct, 2015
+
  - fix `redraw`
  
  
