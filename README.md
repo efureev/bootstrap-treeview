@@ -797,6 +797,8 @@ function (undefined, item, tv) {
 
 `nodeLeave (event, node, treeview)`  - Leave from Node
 
+`nodeMenuClick (event, btn, node)`  - Click on toolbar button
+
 
 
 ## Copyright and Licensing
