@@ -20,6 +20,7 @@
     }
   ],
   "main": [
+    "dist/bootstrap-treeview.full.min.js",
     "dist/bootstrap-treeview.min.js",
     "dist/bootstrap-treeview.min.css"
   ],

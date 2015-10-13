@@ -3,12 +3,22 @@ module.exports = function (grunt) {
 		pkg: grunt.file.readJSON('package.json'), // the package file to use
 
 		uglify: {
-			files: {
-				expand: true,
-				flatten: true,
-				src: 'src/js/*.js',
-				dest: 'dist',
-				ext: '.full.min.js'
+			main: {
+				files: [{
+					expand: true,
+					flatten: true,
+					src: 'src/js/*.js',
+					dest: 'dist',
+					ext: '.min.js'
+				}]
+			},
+			full: {
+				files: {
+					'dist/bootstrap-treeview.full.min.js': [
+						'src/js/bootstrap-treeview.js',
+						'public/bower_components/jQuery-Ext/dist/jExt.min.js'
+					]
+				}
 			}
 		},
 
@@ -53,6 +63,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 
 	// register one or more task lists (you should ALWAYS have a "default" task list)
-	grunt.registerTask('default', ['uglify', 'cssmin', 'copy']);
+	grunt.registerTask('default', ['uglify:main', 'uglify:full', 'cssmin', 'copy']);
 	//grunt.registerTask('test', 'qunit');
 };
