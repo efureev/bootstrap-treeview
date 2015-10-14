@@ -31,6 +31,11 @@ $ bower install efureev-bootstrap-treeview
 or [download](https://github.com/efureev/bootstrap-treeview/releases/tag/v1.3.2) manually.
 
 
+### Todo
+
+To do node Menu and his settings and his filters on node.
+To do callbacks for items menu 
+
 
 ### Usage
 
