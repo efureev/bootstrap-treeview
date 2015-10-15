@@ -339,7 +339,7 @@
 
 		if (target.closest('.node-toolbar').length) {
 			var btn = target.closest('button');
-			return this.$element.trigger('nodeMenuClick',[btn, node]);
+			return this.$element.trigger('nodeMenuClick', [btn, node]);
 		}
 
 		var classList = target.attr('class') ? target.attr('class').split(' ') : [];
