@@ -14,9 +14,14 @@
 	margin-right: 5px;
 }
 
+.treeview .list-group-item {
+	position: relative;
+}
+
 .treeview .list-group-item > .btn-toolbar {
-	float: right;
-	margin: 0 5px;
+	position: absolute;
+	right: 4px;
+	top: 2px;
 	display: none;
 }
 

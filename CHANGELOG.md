@@ -1,9 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## v1.4.2 - 14th Oct, 2015
+## v1.4.3 - 15th Oct, 2015
 
- - fix
+ - fix CSS
+ 
+ ## v1.4.2 - 14th Oct, 2015
+ 
+  - fix
  
  
 ## v1.4.0 - 14th Oct, 2015
