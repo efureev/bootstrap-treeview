@@ -46,6 +46,7 @@
 		showTags: false,
 		showTips: false,
 		showMenu: false,
+		showColumns: false,
 		multiSelect: false,
 
 		// Event handlers
@@ -61,6 +62,7 @@
 		onSearchCleared: undefined,
 		onNodeMenuClick: undefined,
 
+		onAfterRender: undefined,
 		onNodeHover: undefined,
 		onNodeLeave: undefined
 	};
@@ -192,6 +194,7 @@
 		this.$element.off('mouseenter');
 		this.$element.off('mouseleave');
 
+		this.$element.off('afterRender');
 		this.$element.off('nodeChecked');
 		this.$element.off('nodeCollapsed');
 		this.$element.off('nodeDisabled');
@@ -214,6 +217,10 @@
 		this.$element.on('mouseleave', 'li.' + this.options.nodeLiClass, $.proxy(this.onNodeLeaveHandler, this));
 		this.$element.on('mouseenter', $.proxy(this.onTreeHoverHandler, this));
 		this.$element.on('mouseleave', $.proxy(this.onTreeLeaveHandler, this));
+
+		if (typeof (this.options.onAfterRender) === 'function') {
+			this.$element.on('afterRender', this.options.onAfterRender);
+		}
 
 		if (typeof (this.options.onNodeChecked) === 'function') {
 			this.$element.on('nodeChecked', this.options.onNodeChecked);
@@ -550,6 +557,7 @@
 
 		// Build tree
 		this.buildTree(this.tree);
+		this.$element.trigger('afterRender', [this.$element, this.tree]);
 	};
 
 	// Starting from the root node, and recursing down the
@@ -589,6 +597,13 @@
 			.addClass(node.searchResult ? 'search-result' : '')
 			.attr('data-node-id', node.nodeId)
 			.attr('style', this.buildStyleOverride(node));
+
+		// add data attribute on li
+		if (node.dataAttrs !== undefined) {
+			Object.keys(node.dataAttrs).forEach(function(item){
+				treeItem.attr('data-' + item, node.dataAttrs[item]);
+			});
+		}
 
 		// Add indent/spacer to mimic tree structure
 		for (var i = 0; i < (node.level - 1); i++) {
@@ -688,6 +703,18 @@
 			}));
 		}
 
+		// Add div columns in row
+		if (this.options.showColumns && node.columns) {
+			var cols = $(this.template.columnsTpl.wrapper),
+				col = this.template.columnsTpl.column;
+
+			node.columns.forEach(function(c){
+				cols.append($(col).addClass(c.class).html(c.text));
+			});
+
+			treeItem.append(cols);
+		}
+
 		// Add menu
 		if (this.options.showMenu && this.options.menuTpl !== undefined) {
 			var tpl = this.template.menuTpl;
@@ -779,10 +806,14 @@
 		badge: '<span class="badge"></span>',
 		tip: '<span class="badge node-tip" data-toggle="tooltip" data-placement="auto right" data-container="body">?</span>',
 		tipTpl: '<div class="tooltip node-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-		menuTpl: '<div class="btn-toolbar node-toolbar" role="toolbar" aria-label="Toolbar"></div>'
+		menuTpl: '<div class="btn-toolbar node-toolbar" role="toolbar" aria-label="Toolbar"></div>',
+		columnsTpl: {
+			wrapper: '<div class="columns-wrap"></div>',
+			column: '<div class="column"></div>'
+		}
 	};
 
-	Tree.prototype.css = '.treeview li{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
+	Tree.prototype.css = '.treeview li{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}';
 
 
 	/**

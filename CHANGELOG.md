@@ -1,14 +1,33 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## v1.4.3 - 15th Oct, 2015
+## v1.4.6 - 18th Oct, 2015
 
- - fix CSS
+ - Add new feature `data-<attr>` for LI el of node
+
+
+## v1.4.5 - 18th Oct, 2015
+
+ - Add new feature `columns`
+ 	- option `columnsTpl` - inner template for columns
+ 	- option of node `columns` - array of columns, contains `{ 'class' : '', 'text':'' }`
+ 		-- `class` - some css class of column
+ 		-- `text` - some html value
+
+
+## v1.4.4 - 18th Oct, 2015
+
+ - Add new Event `onAfterRender`
+
  
- ## v1.4.2 - 14th Oct, 2015
+## v1.4.3 - 15th Oct, 2015
  
-  - fix
- 
+  - fix CSS
+  
+## v1.4.2 - 14th Oct, 2015
+  
+   - fix
+
  
 ## v1.4.0 - 14th Oct, 2015
 

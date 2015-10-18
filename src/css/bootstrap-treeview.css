@@ -40,3 +40,10 @@
 .treeview .list-group-item > .btn-toolbar .btn-group-xs > .btn {
 	line-height: 1.1;
 }
+
+.treeview .columns-wrap{
+	display:inline-block;float: right;
+}
+.treeview .columns-wrap .column{
+	display:table-cell; padding:0 3px;
+}

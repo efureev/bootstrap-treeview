@@ -131,6 +131,7 @@ If you want to do more, here's the full node specification
   backColor: "#FFFFFF",
   href: "#node-1",
   selectable: true,
+  def : 'some definition',
   state: {
     checked: true,
     disabled: true,
@@ -139,9 +140,19 @@ If you want to do more, here's the full node specification
   },
   tags: ['available'],
   nodes: [
-    {},
+      {},
+      ...
+    ],
+  dataAttrs: {
+	'someAttrName':'someAttrValue'  
+  },
+  columns: [
+  	{
+        class: '',
+        text: ''
+    },
     ...
-  ]
+  ],
 }
 ```
 
@@ -437,6 +448,15 @@ $('#tree').data('treeview')
 ### List of Methods
 
 The following is a list of all available methods.
+
+#### onAfterRender(function)
+
+Trigger a method right after the tree is built
+
+```javascript
+$('#tree').treeview({onAfterRender: function(event, tree, dataTree){}});
+```
+Trigger `afterRender` event.
 
 #### checkAll(options)
 

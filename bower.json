@@ -1,7 +1,7 @@
 {
   "name": "efureev-bootstrap-treeview",
   "description": "Tree View for Twitter Bootstrap",
-  "version": "1.4.3",
+  "version": "1.4.6",
   "homepage": "https://github.com/efureev/bootstrap-treeview",
   "main": [
     "dist/bootstrap-treeview.full.min.js",
